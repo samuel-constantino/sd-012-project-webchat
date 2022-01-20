@@ -21,7 +21,7 @@ app.set('view engine', 'ejs');
 
 app.set('views', './views');
 
-app.get('/chat', chatController);
+app.get('/', chatController);
 
 const PORT = 3000;
 

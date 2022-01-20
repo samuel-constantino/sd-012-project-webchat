@@ -19,7 +19,7 @@ describe('2 - Crie um frontend para que as pessoas interajam com o chat', () => 
   let page;
 
   beforeEach(async (done) => {
-    browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--window-size=1920,1080'], headless: true });
+    browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--window-size=1920,1080'], headless: false });
     page = await browser.newPage();
     await page.goto(BASE_URL);
     done();
@@ -31,10 +31,10 @@ describe('2 - Crie um frontend para que as pessoas interajam com o chat', () => 
   });
 
   it('Será validado que um nickname aleatório é gerado quando o cliente se conecta', async () => {
-    await page.waitForSelector(dataTestid('online-user'));
+    await page.waitForSelector(dataTestid('online-user')); 
 
     const givenNickname = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
-
+    // while (true);
     expect(givenNickname[0]).toMatch(/^[\w'-]{16}$/);
   });
 

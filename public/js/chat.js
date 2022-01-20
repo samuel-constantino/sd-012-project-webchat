@@ -36,4 +36,17 @@ const updateMessages = (message) => {
     messageList.appendChild(li);
 };
 
+const updateUsers = (user) => {
+    const userList = document.querySelector('#users');
+
+    const li = document.createElement('li');
+
+    li.dataset.testid = 'online-user';
+    li.innerHTML = user;
+
+    userList.appendChild(li);
+};
+
 socket.on('message', (message) => updateMessages(message));
+
+socket.on('user', (user) => updateUsers(user));
