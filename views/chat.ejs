@@ -17,7 +17,11 @@
             <ul id="users"></ul>
         </div>
 
-        <ul id="messages"></ul>
+        <ul id="messages">
+            <% historic.forEach(({ message }) => { %>
+                <li data-testid="message"><%= message %></li>
+            <% }) %>
+        </ul>
 
         <form id="formMessage" action="">
             <input

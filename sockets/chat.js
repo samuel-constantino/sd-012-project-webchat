@@ -1,3 +1,5 @@
+const { create } = require('../models/Historic');
+
 const formatHours = (date) => {
     const hour = date.getHours();
     const minutes = date.getMinutes();
@@ -16,23 +18,29 @@ const getDate = () => {
     return `${formatedDate} ${formatHours(date)}`;
 };
 
-const users = {};
+const users = {}; // dicionário de usuários online
 
 module.exports = (io) => io.on('connection', (socket) => {
-    const randomNickname = socket.id.substring(0, 16);
-
-    users[socket.id] = randomNickname;
+    users[socket.id] = socket.id.substring(0, 16); // adiciona novo usuário no dicionáio com id e nickname temporário
     
     io.emit('users', users);
 
-    socket.on('message', ({ chatMessage, nickname }) => {
-        const message = `${getDate()} ${nickname}: ${chatMessage}`;
+    socket.on('message', async ({ chatMessage, nickname }) => {
+        let message = null;
 
+        if (!nickname) {
+            message = `${getDate()} ${users[socket.id]}: ${chatMessage}`;
+        } else {
+            message = `${getDate()} ${nickname}: ${chatMessage}`;
+        }
+
+        await create(message); // adiciona mensagem ao banco de dados
+        
         io.emit('message', message);
     });
 
     socket.on('disconnect', () => {
-        io.emit('message', `${users[socket.id]} desconectou.`);
+        // io.emit('message', `${users[socket.id]} desconectou.`);
 
         delete users[socket.id];
 

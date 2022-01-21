@@ -8,17 +8,18 @@ const formMessage = document.querySelector('#formMessage');
 
 const formNickname = document.querySelector('#formNickname');
 
-// task: implementar esse evento
+let clientName = null;
+
 formNickname.addEventListener('submit', (e) => {
     e.preventDefault();
-
+    clientName = inputNickname.value;
     inputNickname.value = '';
 });
 
 formMessage.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    socket.emit('message', { chatMessage: inputChatMessage.value, nickname: inputNickname.value });
+    socket.emit('message', { chatMessage: inputChatMessage.value, nickname: clientName });
 
     inputChatMessage.value = '';
 });
