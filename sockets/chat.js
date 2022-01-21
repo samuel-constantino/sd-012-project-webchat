@@ -16,12 +16,26 @@ const getDate = () => {
     return `${formatedDate} ${formatHours(date)}`;
 };
 
+const users = {};
+
 module.exports = (io) => io.on('connection', (socket) => {
-    io.emit('user', socket.id.substring(0, 16));
+    const randomNickname = socket.id.substring(0, 16);
+
+    users[socket.id] = randomNickname;
+    
+    io.emit('users', Object.values(users));
 
     socket.on('message', ({ chatMessage, nickname }) => {
         const message = `${getDate()} ${nickname}: ${chatMessage}`;
 
         io.emit('message', message);
+    });
+
+    socket.on('disconnect', () => {
+        io.emit('message', `${users[socket.id]} desconectou.`);
+
+        delete users[socket.id];
+        
+        io.emit('users', Object.values(users));
     });
 });

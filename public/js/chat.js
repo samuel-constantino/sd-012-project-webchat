@@ -1,7 +1,5 @@
 const socket = window.io();
 
-let nickname = socket.id;
-
 const inputNickname = document.querySelector('#inputNickname');
 
 const inputChatMessage = document.querySelector('#inputMessage');
@@ -10,10 +8,9 @@ const formMessage = document.querySelector('#formMessage');
 
 const formNickname = document.querySelector('#formNickname');
 
+// task: implementar esse evento
 formNickname.addEventListener('submit', (e) => {
     e.preventDefault();
-
-    nickname = inputNickname.value;
 
     inputNickname.value = '';
 });
@@ -21,7 +18,7 @@ formNickname.addEventListener('submit', (e) => {
 formMessage.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    socket.emit('message', { chatMessage: inputChatMessage.value, nickname });
+    socket.emit('message', { chatMessage: inputChatMessage.value, nickname: inputNickname.value });
 
     inputChatMessage.value = '';
 });
@@ -37,17 +34,23 @@ const updateMessages = (message) => {
     messageList.appendChild(li);
 };
 
-const updateUsers = (user) => {
-    const userList = document.querySelector('#users');
+const userList = document.querySelector('#users');
 
+const updateUsers = (nickname) => {
     const li = document.createElement('li');
 
     li.dataset.testid = 'online-user';
-    li.innerHTML = user;
+    li.innerHTML = nickname;
 
     userList.appendChild(li);
 };
 
 socket.on('message', (message) => updateMessages(message));
 
-socket.on('user', (user) => updateUsers(user));
+socket.on('users', (nicknames) => {
+    userList.innerHTML = '';
+
+    // updateUsers();
+
+    nicknames.forEach((nickname) => updateUsers(nickname));
+});
