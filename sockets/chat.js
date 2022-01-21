@@ -23,7 +23,7 @@ module.exports = (io) => io.on('connection', (socket) => {
 
     users[socket.id] = randomNickname;
     
-    io.emit('users', Object.values(users));
+    io.emit('users', users);
 
     socket.on('message', ({ chatMessage, nickname }) => {
         const message = `${getDate()} ${nickname}: ${chatMessage}`;
@@ -35,7 +35,7 @@ module.exports = (io) => io.on('connection', (socket) => {
         io.emit('message', `${users[socket.id]} desconectou.`);
 
         delete users[socket.id];
-        
-        io.emit('users', Object.values(users));
+
+        io.emit('users', users);
     });
 });

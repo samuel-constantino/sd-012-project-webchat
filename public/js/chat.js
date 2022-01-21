@@ -47,10 +47,12 @@ const updateUsers = (nickname) => {
 
 socket.on('message', (message) => updateMessages(message));
 
-socket.on('users', (nicknames) => {
+socket.on('users', (users) => {
     userList.innerHTML = '';
 
-    // updateUsers();
+    updateUsers(users[socket.id]);
+
+    const nicknames = Object.values(users).filter((nickname) => nickname !== users[socket.id]);
 
     nicknames.forEach((nickname) => updateUsers(nickname));
 });
