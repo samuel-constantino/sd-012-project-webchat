@@ -31,6 +31,7 @@ const updateMessages = (message) => {
 
     const li = document.createElement('li');
 
+    li.dataset.testid = 'message';
     li.innerText = message;
 
     messageList.appendChild(li);

@@ -16,10 +16,8 @@ const getDate = () => {
     return `${formatedDate} ${formatHours(date)}`;
 };
 
-const getRandomName = () => `user-${Math.random() * 10 + 1}`;
-
 module.exports = (io) => io.on('connection', (socket) => {
-    io.emit('user', getRandomName());
+    io.emit('user', socket.id.substring(0, 16));
 
     socket.on('message', ({ chatMessage, nickname }) => {
         const message = `${getDate()} ${nickname}: ${chatMessage}`;

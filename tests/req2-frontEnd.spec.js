@@ -19,7 +19,7 @@ describe('2 - Crie um frontend para que as pessoas interajam com o chat', () => 
   let page;
 
   beforeEach(async (done) => {
-    browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--window-size=1920,1080'], headless: false });
+    browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--window-size=1920,1080'], headless: true });
     page = await browser.newPage();
     await page.goto(BASE_URL);
     done();
@@ -34,7 +34,7 @@ describe('2 - Crie um frontend para que as pessoas interajam com o chat', () => 
     await page.waitForSelector(dataTestid('online-user')); 
 
     const givenNickname = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
-    // while (true);
+    
     expect(givenNickname[0]).toMatch(/^[\w'-]{16}$/);
   });
 
