@@ -20,6 +20,12 @@ const getDate = () => {
 
 const users = {}; // dicionário de usuários online {id:nickname}
 
+const changeNickname = (io, socket, nickname) => {
+    users[socket.id] = nickname;
+    
+    io.emit('users', users);
+};
+
 const getMessages = async (io, socket, { chatMessage, nickname }) => {
     let message = null;
 
@@ -46,6 +52,8 @@ module.exports = (io) => io.on('connection', (socket) => {
     users[socket.id] = socket.id.substring(0, 16); // adiciona novo usuário no dicionáio com id e nickname temporário
     
     io.emit('users', users);
+
+    socket.on('changeNickname', (nickname) => changeNickname(io, socket, nickname));
     
     socket.on('message', (message) => getMessages(io, socket, message));
 

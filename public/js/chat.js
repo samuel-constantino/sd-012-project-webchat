@@ -12,7 +12,11 @@ let clientName = null;
 
 formNickname.addEventListener('submit', (e) => {
     e.preventDefault();
+
+    socket.emit('changeNickname', inputNickname.value);
+
     clientName = inputNickname.value;
+
     inputNickname.value = '';
 });
 
@@ -50,7 +54,7 @@ socket.on('message', (message) => updateMessages(message));
 
 socket.on('users', (users) => {
     userList.innerHTML = '';
-
+    
     updateUsers(users[socket.id]);
 
     const nicknames = Object.values(users).filter((nickname) => nickname !== users[socket.id]);
