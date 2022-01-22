@@ -18,32 +18,36 @@ const getDate = () => {
     return `${formatedDate} ${formatHours(date)}`;
 };
 
-const users = {}; // dicionário de usuários online
+const users = {}; // dicionário de usuários online {id:nickname}
+
+const getMessages = async (io, socket, { chatMessage, nickname }) => {
+    let message = null;
+
+    if (!nickname) {
+        message = `${getDate()} ${users[socket.id]}: ${chatMessage}`;
+    } else {
+        message = `${getDate()} ${nickname}: ${chatMessage}`;
+    }
+
+    await create(message); // adiciona mensagem ao banco de dados
+    
+    io.emit('message', message);
+};
+
+const disconnect = async (io, socket) => {
+    // io.emit('message', `${users[socket.id]} desconectou.`);
+
+    delete users[socket.id];
+
+    io.emit('users', users);
+};
 
 module.exports = (io) => io.on('connection', (socket) => {
     users[socket.id] = socket.id.substring(0, 16); // adiciona novo usuário no dicionáio com id e nickname temporário
     
     io.emit('users', users);
+    
+    socket.on('message', (message) => getMessages(io, socket, message));
 
-    socket.on('message', async ({ chatMessage, nickname }) => {
-        let message = null;
-
-        if (!nickname) {
-            message = `${getDate()} ${users[socket.id]}: ${chatMessage}`;
-        } else {
-            message = `${getDate()} ${nickname}: ${chatMessage}`;
-        }
-
-        await create(message); // adiciona mensagem ao banco de dados
-        
-        io.emit('message', message);
-    });
-
-    socket.on('disconnect', () => {
-        // io.emit('message', `${users[socket.id]} desconectou.`);
-
-        delete users[socket.id];
-
-        io.emit('users', users);
-    });
+    socket.on('disconnect', () => disconnect(io, socket));
 });
